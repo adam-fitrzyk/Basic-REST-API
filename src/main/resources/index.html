@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TLPT REST API</title>
+</head>
+<body>
+    <main>
+        <h1>Welcome to the TLPT (TL Practise Task) RESTful API!</h1>
+        <br><br>
+        <fieldset>
+            <h3>Content</h3>
+            <br>
+            <li>/users</li>
+            <li>/users/:id</li>
+            <li>/users/search?filter=:filter&filter=:filter&...</li>
+            <br>
+            <li>/events</li>
+            <li>/events/:id</li>
+            <li>/events/search?filter=:filter&filter=:filter&...</li>
+            <p>A filter (:filter) is a json string with the following parameters to filter content retrieved:</p>
+            <fieldset>
+                <pre>
+                <br>{
+                <br>    "attribute": text,          >> required
+                <br>    "operator": text,           >> required
+                <br>    "value": text or integer,   // optional if "range" field is provided
+                <br>    "range": {                  // optional if "value" field is provided
+                <br>        "from": integer,
+                <br>        "to": integer
+                <br>    }
+                <br>}
+                </pre>
+            </fieldset>
+            <br>
+            <p>The operator field must be one of the following:</p>
+            <li>"eq" (meaning equals)</li>
+            <li>"lte" (meaning less than or equal to)</li>
+            <li>"gte" (meaning greater than or equal to)</li>
+            <p>NOTE: if the "range" field is provided, only the "eq" operator can be used.</p>
+        </fieldset>
+    </main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": ["attribute", "operator"],
+    "properties": {
+        "attribute": { "type": "string" },
+        "operator": {
+            "type": "string",
+            "enum": ["eq", "lte", "gte"]
+        }
+    },
+    "oneOf": [
+    {
+        "required": ["value"],
+        "properties": {
+            "value": {
+                "anyOf": [
+                    { "type": "string" },
+                    { "type": "integer" }
+                ]
+            }
+        }
+    },
+    {
+        "required": ["range"],
+        "properties": {
+            "range": {
+                "type": "object",
+                "required": ["from", "to"],
+                "properties": {
+                    "from": { "type": "integer" },
+                    "to": { "type": "integer" }
+                }
+            }
+        }
+    }
+    ],
+    "not": {
+        "required": ["value", "range"]
+    },
+    "if": {
+        "required": ["range"]
+    },
+    "then": {
+        "properties": {
+            "operator": {
+                "enum": ["eq"]
+            }
+        }
+    }
+}  

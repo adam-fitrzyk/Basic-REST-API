@@ -1,0 +1,59 @@
+package org.example.restapi;
+
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+
+/* tl_rest_api_task DATABASE PASSWORD:
+ * --- LMBSBHwaaAV9bC3U ---
+ */
+
+public class MongoDBConnection {
+
+    private static final MongoDBConnection instance = new MongoDBConnection();
+
+    private String connectionString = "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster";
+    private String databaseName = "tl_rest_api_task";
+    
+    private MongoClient client;
+    private MongoDatabase database;
+
+    private MongoDBConnection() {
+        var serverApi = ServerApi.builder()
+            .version(ServerApiVersion.V1)
+            .build();
+
+        var settings = MongoClientSettings.builder()
+            .applyConnectionString(new ConnectionString(this.connectionString))
+            .serverApi(serverApi)
+            .build();
+
+        this.client = MongoClients.create(settings);
+        this.database = client.getDatabase(this.databaseName);
+        System.out.println("MongoDatabase connected successfully");
+    }
+
+    public static MongoDBConnection getInstance() {
+        return instance;
+    }
+
+    public void testPing() {
+        var collection = database.getCollection("pings");
+        collection.insertOne(new Document("ping", 1));
+    }
+
+    public MongoDatabase getDatabase() {
+        return this.database;
+    }
+
+    public void close() {
+        this.client.close();
+    }
+
+}
