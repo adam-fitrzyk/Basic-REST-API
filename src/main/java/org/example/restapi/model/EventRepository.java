@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.restapi.model;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,19 +11,20 @@ import org.bson.types.ObjectId;
 
 public class EventRepository extends MongoRepository {
 
-    private static final EventRepository instance = new EventRepository();
+    private static final EventRepository INSTANCE = new EventRepository();
+    public static final String COLLECTION_NAME = "events";
     
     private MongoDBConnection connection;
     private MongoCollection<Document> collection;
 
-    public EventRepository() {
-        super("events");
+    private EventRepository() {
+        super(COLLECTION_NAME);
         this.connection = this.getConnection();
         this.collection = this.getCollection();
     }
 
     public static EventRepository getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public List<Event> findAll() {

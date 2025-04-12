@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.restapi.model;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.empty;
@@ -33,6 +33,10 @@ public class MongoRepository {
     }
 
     public Bson loadQuery(List<Document> filters) {
+        if (filters.isEmpty()) {
+            return empty();
+        }
+        
         var bson_filter_list = new ArrayList<Bson>();
         String attribute;
         String operator;

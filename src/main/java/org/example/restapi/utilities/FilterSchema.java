@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.restapi.utilities;
 
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -15,9 +15,16 @@ public class FilterSchema {
 
     private Schema schema;
 
-    public FilterSchema() {
-        var raw_schema = this.readJSONFile("FilterSchema.json");
+    private static final FilterSchema INSTANCE = new FilterSchema();
+    private static final String SCHEMA_FILE_NAME = "FilterSchema.json";
+
+    private FilterSchema() {
+        var raw_schema = this.readJSONFile(SCHEMA_FILE_NAME);
         this.schema = SchemaLoader.load(raw_schema);
+    }
+
+    public static FilterSchema getInstance() {
+        return INSTANCE;
     }
 
     public JSONObject readJSONFile(String file_name) {

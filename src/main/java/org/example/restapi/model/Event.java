@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.restapi.model;
 
 import org.bson.types.ObjectId;
 

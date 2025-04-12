@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.restapi.model;
 
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
@@ -16,10 +16,9 @@ import org.bson.Document;
 
 public class MongoDBConnection {
 
-    private static final MongoDBConnection instance = new MongoDBConnection();
-
-    private String connectionString = "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster";
-    private String databaseName = "tl_rest_api_task";
+    private static final MongoDBConnection INSTANCE = new MongoDBConnection();
+    private static final String CONNECTION_STRING = "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster";
+    private static final String DATABASE_NAME = "tl_rest_api_task";
     
     private MongoClient client;
     private MongoDatabase database;
@@ -30,17 +29,17 @@ public class MongoDBConnection {
             .build();
 
         var settings = MongoClientSettings.builder()
-            .applyConnectionString(new ConnectionString(this.connectionString))
+            .applyConnectionString(new ConnectionString(CONNECTION_STRING))
             .serverApi(serverApi)
             .build();
 
         this.client = MongoClients.create(settings);
-        this.database = client.getDatabase(this.databaseName);
-        System.out.println("MongoDatabase connected successfully");
+        this.database = client.getDatabase(DATABASE_NAME);
+        System.out.println("MongoDatabase utilities formed successfully");
     }
 
     public static MongoDBConnection getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public void testPing() {

@@ -1,19 +1,25 @@
 package org.example.restapi;
 
+import org.example.restapi.utilities.RequestHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import java.util.ArrayList;
 
 public class Server {
 
     public int port;
+    private RESTController controller;
 
     public Server(int port) {
         this.port = port;
+        this.controller = new RESTController();
     }
     
     public void run() {
@@ -50,16 +56,16 @@ public class Server {
                     }
                     System.out.println();
 
-                    var components = RESTController.parseRequest(request);
+                    var components = RequestHandler.parseRequest(request);
                     var resource_path = components[1];
                     var parameters = components[2];
-                    var status = RESTController.validateRequest(components);
+                    var status = RequestHandler.validateRequest(components);
 
                     if (status != 200) {
                         writer.println("HTTP/1.1 " + status + " Error\r\n\r\n");
                         writer.println("Error: " + status);
                     } else {
-                        var response = RESTController.getResource(resource_path, parameters);
+                        var response = this.controller.getResource(resource_path, parameters);
                         writer.println(response);
                     }
 

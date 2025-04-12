@@ -6,23 +6,39 @@ import static java.util.Arrays.asList;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.example.restapi.model.Event;
+import org.example.restapi.model.EventRepository;
+import org.example.restapi.model.MongoDBConnection;
+import org.example.restapi.model.User;
+import org.example.restapi.model.UserRepository;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class MongoDBTest {
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-    static UserRepository user_repository;
-    static EventRepository event_repository;
+@Disabled("Disabled due to school firewall")
+@ExtendWith(MockitoExtension.class)
+public class RepositoryTest {
+
+    // INTRODUCE MOCKING HERE SO DATABASE CONNECTION IS UNNECESSARY
+
+    private static UserRepository user_repository;
+    private static EventRepository event_repository;
 
     @BeforeAll
     static void loadRepositories() {
-        System.out.println(">>> MONGO DATABASE ACCESS TEST");
-        user_repository = new UserRepository();
-        event_repository = new EventRepository();
+        System.out.println(">>> REPOSITORY UTILITIES TESTS");
+        user_repository = UserRepository.getInstance();
+        event_repository = EventRepository.getInstance();
     }
 
     @AfterAll
     static void closeRepositories() {
-        user_repository.closeConnection();
+        MongoDBConnection.getInstance().close();
     }
 
     /* Test UserRepository class */

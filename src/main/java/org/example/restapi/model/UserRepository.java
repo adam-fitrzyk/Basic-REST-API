@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.restapi.model;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,19 +11,20 @@ import org.bson.types.ObjectId;
 
 public class UserRepository extends MongoRepository {
 
-    private static final UserRepository instance = new UserRepository();
+    private static final UserRepository INSTANCE = new UserRepository();
+    public static final String COLLECTION_NAME = "users";
 
     private MongoDBConnection connection;
     private MongoCollection<Document> collection;
 
-    public UserRepository() {
-        super("users");
+    private UserRepository() {
+        super(COLLECTION_NAME);
         this.connection = this.getConnection();
         this.collection = this.getCollection();
     }
 
     public static UserRepository getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public List<User> findAll() {
