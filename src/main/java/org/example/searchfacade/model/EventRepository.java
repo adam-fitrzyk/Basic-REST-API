@@ -1,4 +1,4 @@
-package org.example.restapi.model;
+package org.example.searchfacade.model;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 public class EventRepository extends MongoRepository {
 
-    private static final EventRepository INSTANCE = new EventRepository();
+    private static EventRepository INSTANCE;
     public static final String COLLECTION_NAME = "events";
     
     private MongoDBConnection connection;
@@ -24,6 +24,9 @@ public class EventRepository extends MongoRepository {
     }
 
     public static EventRepository getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new EventRepository();
+        }
         return INSTANCE;
     }
 

@@ -1,4 +1,4 @@
-package org.example.restapi.utilities;
+package org.example.searchfacade.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.bson.json.JsonParseException;
 
 public class RequestHandler {
 
-    private static FilterSchema filter_schema = FilterSchema.getInstance();
+    private static FilterSchemaManager schema_manager = FilterSchemaManager.getInstance();
 
     public static String[] parseRequest(ArrayList<String> request) {
         String method;
@@ -80,7 +80,7 @@ public class RequestHandler {
 
     public static boolean validateParameters(List<Document> filters) {
         for (var filter : filters) {
-            if (!filter_schema.validateFilter(filter)) {
+            if (!schema_manager.validateFilter(filter)) {
                 return false;
             }
         }

@@ -1,0 +1,4 @@
+{
+  "port": 6868,
+  "filter_schema_name": "filter-schema.json"
+}

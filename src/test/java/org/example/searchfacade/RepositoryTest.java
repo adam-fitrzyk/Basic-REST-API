@@ -1,4 +1,4 @@
-package org.example.restapi;
+package org.example.searchfacade;
 
 import java.util.ArrayList;
 import static java.util.Collections.sort;
@@ -6,18 +6,15 @@ import static java.util.Arrays.asList;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.example.restapi.model.Event;
-import org.example.restapi.model.EventRepository;
-import org.example.restapi.model.MongoDBConnection;
-import org.example.restapi.model.User;
-import org.example.restapi.model.UserRepository;
+import org.example.searchfacade.model.Event;
+import org.example.searchfacade.model.EventRepository;
+import org.example.searchfacade.model.MongoDBConnection;
+import org.example.searchfacade.model.User;
+import org.example.searchfacade.model.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @Disabled("Disabled due to school firewall")

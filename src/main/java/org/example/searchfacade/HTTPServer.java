@@ -1,6 +1,6 @@
-package org.example.restapi;
+package org.example.searchfacade;
 
-import org.example.restapi.utilities.RequestHandler;
+import org.example.searchfacade.utilities.RequestHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +12,12 @@ import java.net.Socket;
 
 import java.util.ArrayList;
 
-public class Server {
+public class HTTPServer {
 
     public int port;
     private RESTController controller;
 
-    public Server(int port) {
+    public HTTPServer(int port) {
         this.port = port;
         this.controller = new RESTController();
     }
@@ -50,11 +50,9 @@ public class Server {
                     socket.close();
                 } else {
                     while (!request_line.isEmpty()) {
-                        System.out.println(request_line);
                         request.add(request_line);
                         request_line = reader.readLine();
                     }
-                    System.out.println();
 
                     var components = RequestHandler.parseRequest(request);
                     var resource_path = components[1];
@@ -66,7 +64,8 @@ public class Server {
                         writer.println("Error: " + status);
                     } else {
                         var response = this.controller.getResource(resource_path, parameters);
-                        writer.println(response);
+                        output.write(response);
+                        output.flush();
                     }
 
                     // Send out response and close connection

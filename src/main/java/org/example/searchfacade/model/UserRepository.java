@@ -1,4 +1,4 @@
-package org.example.restapi.model;
+package org.example.searchfacade.model;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 public class UserRepository extends MongoRepository {
 
-    private static final UserRepository INSTANCE = new UserRepository();
+    private static UserRepository INSTANCE;
     public static final String COLLECTION_NAME = "users";
 
     private MongoDBConnection connection;
@@ -24,6 +24,9 @@ public class UserRepository extends MongoRepository {
     }
 
     public static UserRepository getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new UserRepository();
+        }
         return INSTANCE;
     }
 

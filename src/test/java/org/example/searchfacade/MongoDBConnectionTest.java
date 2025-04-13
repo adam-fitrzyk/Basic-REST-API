@@ -1,8 +1,8 @@
-package org.example.restapi;
+package org.example.searchfacade;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.example.restapi.model.MongoDBConnection;
+import org.example.searchfacade.model.MongoDBConnection;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 

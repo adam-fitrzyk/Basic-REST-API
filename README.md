@@ -7,9 +7,9 @@ We want to get a feeling how you name, structure and organise your code as well 
 
 # Technical task
 
-The requirement are detailed below. Your tasks is to implement as many as you can in a certain amount of time. We are not asking you to spend days on this exercise. Your application will still be evaluated even if not all requirements are implemented. If you decided to skip or change some requirements please explain your decision.
+The requirements are detailed below. Your task is to implement as many as you can in a certain amount of time. We are not asking you to spend days on this exercise. Your application will still be evaluated even if not all requirements are implemented. If you decided to skip or change some requirements please explain your decision.
 
-The tasks is to create a REST API interface which allows client applications to query data from a datastore.
+The task is to create a REST API interface which allows client applications to query data from a datastore.
 
 Note: As we are running on OS.X, we will not be able to test your project in a Windows environment. 
 
@@ -19,7 +19,7 @@ The goal is to develop a (RESTful) API application, lets call it "Search Facade"
 - Use Maven build tool
 - Provide the command line to execute the project
 - All your tests must pass
-- As a nice to have provide a way to launch application as Docker container.
+- As a nice-to-have provide a way to launch application as Docker container.
 
 ## REST API
 

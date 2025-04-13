@@ -1,4 +1,4 @@
-package org.example.restapi.model;
+package org.example.searchfacade.model;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.empty;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCollection;
@@ -52,6 +53,13 @@ public class MongoRepository {
             try {
                 // If value field is used, form filter with that value
                 var value = filter.get("value");
+                if (attribute.equals("_id")) {
+                    try {
+                        value = new ObjectId(value.toString());
+                    } catch (Exception e) {
+                        assert true;
+                    }
+                }
                 switch (operator) {
                     case "eq":
                         bson_filter = eq(attribute, value);

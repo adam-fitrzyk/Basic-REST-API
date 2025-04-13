@@ -1,4 +1,4 @@
-package org.example.restapi.model;
+package org.example.searchfacade.model;
 
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
@@ -16,7 +16,7 @@ import org.bson.Document;
 
 public class MongoDBConnection {
 
-    private static final MongoDBConnection INSTANCE = new MongoDBConnection();
+    private static MongoDBConnection INSTANCE;
     private static final String CONNECTION_STRING = "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster";
     private static final String DATABASE_NAME = "tl_rest_api_task";
     
@@ -39,6 +39,9 @@ public class MongoDBConnection {
     }
 
     public static MongoDBConnection getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new MongoDBConnection();
+        }
         return INSTANCE;
     }
 

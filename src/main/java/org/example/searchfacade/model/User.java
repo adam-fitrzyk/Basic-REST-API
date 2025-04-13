@@ -1,4 +1,4 @@
-package org.example.restapi.model;
+package org.example.searchfacade.model;
 
 import org.bson.types.ObjectId;
 
