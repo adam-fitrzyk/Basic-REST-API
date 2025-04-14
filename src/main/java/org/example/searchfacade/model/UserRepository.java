@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 public class UserRepository extends MongoRepository {
 
-    private static UserRepository INSTANCE;
+    private static UserRepository instance;
     public static final String COLLECTION_NAME = "users";
 
     private MongoDBConnection connection;
@@ -24,10 +24,10 @@ public class UserRepository extends MongoRepository {
     }
 
     public static UserRepository getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new UserRepository();
+        if (instance == null) {
+            instance = new UserRepository();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public List<User> findAll() {

@@ -55,14 +55,14 @@ public class HTTPServer {
                     }
 
                     var components = RequestHandler.parseRequest(request);
-                    var resource_path = components[1];
-                    var parameters = components[2];
                     var status = RequestHandler.validateRequest(components);
 
                     if (status != 200) {
                         writer.println("HTTP/1.1 " + status + " Error\r\n\r\n");
                         writer.println("Error: " + status);
                     } else {
+                        var resource_path = components[1];
+                        var parameters = components[2];
                         var response = this.controller.getResource(resource_path, parameters);
                         output.write(response);
                         output.flush();
@@ -75,7 +75,7 @@ public class HTTPServer {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 

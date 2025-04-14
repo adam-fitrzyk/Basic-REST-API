@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 public class EventRepository extends MongoRepository {
 
-    private static EventRepository INSTANCE;
+    private static EventRepository instance;
     public static final String COLLECTION_NAME = "events";
     
     private MongoDBConnection connection;
@@ -24,10 +24,10 @@ public class EventRepository extends MongoRepository {
     }
 
     public static EventRepository getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new EventRepository();
+        if (instance == null) {
+            instance = new EventRepository();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public List<Event> findAll() {
@@ -83,7 +83,6 @@ public class EventRepository extends MongoRepository {
     public List<Event> findByFilters(List<Document> filters) {
         // Load filters into a single query
         var query = this.loadQuery(filters);
-        System.out.println(query.toString());
 
         // Get matching entries 
         ObjectId _id;

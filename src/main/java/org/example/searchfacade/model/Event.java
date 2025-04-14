@@ -20,8 +20,23 @@ public class Event {
 
     public String toString() {
         return String.format(
+                """
+                {
+                    "_id" = ObjectId("%s"),
+                    "type" = "%s",
+                    "time" = %.0f,
+                    "user" = "%s",
+                    "ip" = "%s"
+                }
+                """,
+                _id.toString(), type, time, user, ip
+        );
+    }
+
+    public String toStringPretty() {
+        return String.format(
             "Event[_id=%s, type=%s, time=%.0f, user=%s, ip=%s]",
-            this._id.toString(), this.type, this.time, this.user, this.ip
+            _id.toString(), type, time, user, ip
         );
     }
 

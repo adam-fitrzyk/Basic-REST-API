@@ -22,7 +22,7 @@ public class JsonHandler {
             return new JSONObject(content.toString());
         }
         catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return null;
         }
     }

@@ -1,4 +1,5 @@
 {
   "port": 6868,
+  "webroot": "/public",
   "filter_schema_name": "filter-schema.json"
 }

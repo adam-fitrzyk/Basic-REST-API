@@ -1,46 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/x-icon" href="koala-icon.ico">
+    <link rel="stylesheet" href="search-facade.css">
     <title>TLPT REST API</title>
 </head>
 <body>
+    <header>
+        <div>
+            <h1>-<{ Search Facade }>-</h1>
+            <p>Welcome to this TLPT (TL Practise Task) RESTful API!</p>
+        </div>
+    </header>
     <main>
-        <h1>Welcome to -<{ Search Facade }>-, a TLPT (TL Practise Task) RESTful API!</h1>
-        <br><br>
-        <fieldset>
-            <h3>Content</h3>
-            <br>
+        <h3>Content</h3>
+        <br>
+        <div>
             <li>/users</li>
             <li>/users/:id</li>
             <li>/users/search?filter=:filter&filter=:filter&...</li>
-            <br>
+        </div>
+        <br>
+        <div>
             <li>/events</li>
             <li>/events/:id</li>
             <li>/events/search?filter=:filter&filter=:filter&...</li>
-            <p>A filter (:filter) is a json string with the following parameters to filter content retrieved:</p>
-            <fieldset>
-                <pre>
-                <br>{
-                <br>    "attribute": text,          >> required
-                <br>    "operator": text,           >> required
-                <br>    "value": text or integer,   // optional if "range" field is provided
-                <br>    "range": {                  // optional if "value" field is provided
-                <br>        "from": integer,
-                <br>        "to": integer
-                <br>    }
-                <br>}
-                </pre>
-            </fieldset>
-            <br>
+        </div>
+        <br>
+        <p>A filter (:filter) is a json string with the following parameters to filter content retrieved:</p>
+        <br>
+        <fieldset>
+            <pre>
+    {
+        "attribute": text,          >> required
+        "operator": text,           >> required
+        "value": text or integer,   // optional if "range" field is provided
+        "range": {                  // optional if "value" field is provided
+            "from": integer,
+            "to": integer,
+        }
+    }
+            </pre>
+        </fieldset>
+        <br>
+        <div>
             <p>The operator field must be one of the following:</p>
             <li>"eq" (meaning equals)</li>
             <li>"lte" (meaning less than or equal to)</li>
             <li>"gte" (meaning greater than or equal to)</li>
             <p>NOTE: if the "range" field is provided, only the "eq" operator can be used.</p>
-        </fieldset>
+        </div>
     </main>
 </body>
 </html>

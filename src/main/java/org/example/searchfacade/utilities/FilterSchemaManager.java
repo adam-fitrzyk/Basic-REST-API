@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class FilterSchemaManager {
 
-    private static FilterSchemaManager INSTANCE;
+    private static FilterSchemaManager instance;
 
     private FilterSchema filter_schema;
 
@@ -17,10 +17,10 @@ public class FilterSchemaManager {
     }
 
     public static FilterSchemaManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new FilterSchemaManager();
+        if (instance == null) {
+            instance = new FilterSchemaManager();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public void loadSchema(String schema_file_name) {

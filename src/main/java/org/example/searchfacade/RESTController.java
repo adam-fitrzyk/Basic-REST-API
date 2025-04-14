@@ -33,12 +33,24 @@ public class RESTController {
 
         try {
             switch (resource_path) {
-                case "/":
+                case "/", "/index.html":
                     resource = this.getIndex();
                     header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving index html page...");
+                    break;
+
+                case "/search-facade.css":
+                    resource = this.getCSS();
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/css\r\n\r\n";
+
+                    response.write(header.getBytes());
+                    response.write(resource);
+
+                    System.out.println("Serving css file...");
                     break;
 
                 case "/users", "/users/":
@@ -47,6 +59,8 @@ public class RESTController {
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving all user entries...");
                     break;
 
                 case "/users/search", "/users/search/":
@@ -58,9 +72,9 @@ public class RESTController {
                     header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
 
                     filters = RequestHandler.parseParameters(parameters);
-                    for (var filter : filters) {
-                        System.out.println(filter.toJson());
-                    }
+//                    for (var filter : filters) {
+//                        System.out.println(filter.toJson());
+//                    }
 
                     if (RequestHandler.validateParameters(filters)) {
                         resource = this.getUsersBySearch(filters);
@@ -70,6 +84,8 @@ public class RESTController {
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving user entries by filter " + filters.toString() + "...");
                     break;
 
                 case "/events", "/events/":
@@ -78,6 +94,8 @@ public class RESTController {
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving all event entries...");
                     break;
 
                 case "/events/search", "/events/search/":
@@ -89,9 +107,9 @@ public class RESTController {
                     header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
 
                     filters = RequestHandler.parseParameters(parameters);
-                    for (var filter : filters) {
-                        System.out.println(filter.toJson());
-                    }
+//                    for (var filter : filters) {
+//                        System.out.println(filter.toJson());
+//                    }
 
                     if (RequestHandler.validateParameters(filters)) {
                         resource = this.getEventsBySearch(filters);
@@ -101,6 +119,8 @@ public class RESTController {
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving event entries by filter " + filters.toString() + "...");
                     break;
             }
 
@@ -113,6 +133,8 @@ public class RESTController {
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving user entries by id...");
                 } else if (resource_path.matches("/events/.+")) {
                     String id = resource_path.split("/")[2];
 
@@ -121,24 +143,32 @@ public class RESTController {
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Serving event entries by id...");
                 } else {
                     header = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\n";
                     resource = "Error 404, Not Found".getBytes();
 
                     response.write(header.getBytes());
                     response.write(resource);
+
+                    System.out.println("Unknown request, serving 404 Error...");
                 }
             }
         }
         catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
 
         return response.toByteArray();
     }
 
     public byte[] getIndex() {
-        return FileHandler.getFileAsBytes("public/index.html");
+        return FileHandler.getFileAsBytes("index.html");
+    }
+
+    public byte[] getCSS() {
+        return FileHandler.getFileAsBytes("search-facade.css");
     }
 
     public byte[] getUsers() {
@@ -146,8 +176,8 @@ public class RESTController {
         var users = this.user_repository.findAll();
 
         for (User user : users) {
-            resource.append(user.toString())
-                    .append("\r\n");
+            resource.append(user.toString().strip())
+                    .append(",\n");
         }
 
         return resource.toString().getBytes();
@@ -169,8 +199,8 @@ public class RESTController {
 
         if (!users.isEmpty()) {
             for (var user : users) {
-                resource.append(user.toString())
-                        .append("\r\n");
+                resource.append(user.toString().strip())
+                        .append(",\n");
             }
         }
 
@@ -182,8 +212,8 @@ public class RESTController {
         var events = this.event_repository.findAll();
 
         for (Event event : events) {
-            resource.append(event.toString())
-                    .append("\r\n");
+            resource.append(event.toString().strip())
+                    .append(",\n");
         }
 
         return resource.toString().getBytes();
@@ -205,8 +235,8 @@ public class RESTController {
         
         if (!events.isEmpty()) {
             for (var event : events) {
-                resource.append(event.toString())
-                        .append("\r\n");
+                resource.append(event.toString().strip())
+                        .append(",\n");
             }
         }
 

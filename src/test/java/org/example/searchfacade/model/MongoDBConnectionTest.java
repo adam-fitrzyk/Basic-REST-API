@@ -1,8 +1,7 @@
-package org.example.searchfacade;
+package org.example.searchfacade.model;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.example.searchfacade.model.MongoDBConnection;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 

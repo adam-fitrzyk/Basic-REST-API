@@ -1,0 +1,25 @@
+/* General page styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Header */
+header {
+    width: 98vw;
+    margin: auto;
+    text-align: center;
+    color: #333;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+
+    h1 {
+        background-color: #99ddff;
+        padding: 1vh;
+    }
+}
+
+/* Container for all text exluding header */
+main {
+    padding: 2vw;
+}

@@ -16,7 +16,7 @@ import org.bson.Document;
 
 public class MongoDBConnection {
 
-    private static MongoDBConnection INSTANCE;
+    private static MongoDBConnection instance;
     private static final String CONNECTION_STRING = "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster";
     private static final String DATABASE_NAME = "tl_rest_api_task";
     
@@ -35,14 +35,14 @@ public class MongoDBConnection {
 
         this.client = MongoClients.create(settings);
         this.database = client.getDatabase(DATABASE_NAME);
-        System.out.println("MongoDatabase utilities formed successfully");
+        System.out.println("> MongoDatabase model formed successfully");
     }
 
     public static MongoDBConnection getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new MongoDBConnection();
+        if (instance == null) {
+            instance = new MongoDBConnection();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public void testPing() {

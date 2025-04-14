@@ -4,16 +4,16 @@ import org.example.searchfacade.utilities.JsonHandler;
 
 public class ConfigurationManager {
 
-    private static ConfigurationManager INSTANCE;
+    private static ConfigurationManager instance;
     private static Configuration configuration;
 
     private ConfigurationManager() { };
 
     public static ConfigurationManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ConfigurationManager();
+        if (instance == null) {
+            instance = new ConfigurationManager();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public void loadConfigurationFile(String file_name) {

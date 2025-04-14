@@ -13,8 +13,21 @@ public class User {
         this.user = user;
         this.workstation = workstation;
     }
-    
+
     public String toString() {
+        return String.format(
+                """
+                {
+                    "_id" = ObjectId("%s"),
+                    "user" = "%s",
+                    "workstation" = "%s"
+                }
+                """,
+                _id.toString(), user, workstation
+        );
+    }
+    
+    public String toStringPretty() {
         return String.format(
             "User[_id=%s, user=%s, workstation=%s]",
             _id.toString(), user, workstation
