@@ -1,5 +1,10 @@
 Version 1.2
 
+# Running the Application
+
+To run the application, simply navigate to the directory containing the jar files, and enter:
+``java -cp [name of jar file] org.example.searchfacade.Application``
+
 # Introduction
 
 This document describes a technical task for candidates applying for Sr Java Software Engineering role at ---. This is programming task to be completed by you at home. We recommend that you time box your activity and priorities based on the highest value added delivery items. 
