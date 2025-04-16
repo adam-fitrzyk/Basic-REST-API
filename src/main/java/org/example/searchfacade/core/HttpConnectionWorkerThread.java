@@ -40,8 +40,6 @@ public class HttpConnectionWorkerThread extends Thread {
             var request = new ArrayList<String>();
             String request_line = reader.readLine();
 
-            System.out.println(request_line);
-
             if (request_line == null) {
                 reader.close();
                 writer.close();

@@ -11,8 +11,8 @@ public class FileHandler {
 
     private static final Configuration conf = ConfigurationManager.getInstance().getConfiguration();
 
-    public static byte[] getFileAsBytes(String file_name) {
-        try (var in = FileHandler.class.getResourceAsStream(conf.getWebroot() + "/" + file_name)) {
+    public static byte[] getFileAsBytes(String relative_path) {
+        try (var in = FileHandler.class.getResourceAsStream(conf.getWebroot() + "/" + relative_path)) {
             if (in == null) {
                 throw new IOException("Inputstream of given file is null");
             }

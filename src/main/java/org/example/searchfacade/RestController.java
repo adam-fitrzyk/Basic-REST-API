@@ -179,11 +179,11 @@ public class RestController {
     }
 
     public byte[] getFavicon() {
-        return FileHandler.getFileAsBytes("koala-icon.ico");
+        return FileHandler.getFileAsBytes("img/koala-icon.ico");
     }
 
     public byte[] getCSS() {
-        return FileHandler.getFileAsBytes("search-facade.css");
+        return FileHandler.getFileAsBytes("css/search-facade.css");
     }
 
     public byte[] getUsers() {
