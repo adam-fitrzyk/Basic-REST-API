@@ -13,12 +13,14 @@ public class FileHandler {
 
     public static byte[] getFileAsBytes(String file_name) {
         try (var in = FileHandler.class.getResourceAsStream(conf.getWebroot() + "/" + file_name)) {
-            var buffered_in = new BufferedInputStream(in);
+            if (in == null) {
+                throw new IOException("Inputstream of given file is null");
+            }
             var out = new ByteArrayOutputStream();
 
             final byte[] buffer = new byte[0x10000];
             int n = 0;
-            while ((n = buffered_in.read(buffer)) >= 0) {
+            while ((n = in.read(buffer)) >= 0) {
                 out.write(buffer, 0, n);
             }
 

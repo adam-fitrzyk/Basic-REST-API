@@ -6,6 +6,7 @@ import org.example.searchfacade.model.User;
 import org.example.searchfacade.model.UserRepository;
 
 import org.example.searchfacade.utilities.FileHandler;
+import org.example.searchfacade.utilities.HtmlCrafter;
 import org.example.searchfacade.utilities.RequestHandler;
 
 import java.io.ByteArrayOutputStream;
@@ -14,12 +15,12 @@ import java.util.ArrayList;
 
 import org.bson.Document;
 
-public class RESTController {
+public class RestController {
 
     private UserRepository user_repository;
     private EventRepository event_repository;
 
-    public RESTController() {
+    public RestController() {
         this.user_repository = UserRepository.getInstance();
         this.event_repository = EventRepository.getInstance();
     }
@@ -43,7 +44,17 @@ public class RESTController {
                     System.out.println("Serving index html page...");
                     break;
 
-                case "/search-facade.css":
+                case "/img/koala-icon.ico":
+                    resource = this.getFavicon();
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: image/x-icon\r\n\r\n";
+
+                    response.write(header.getBytes());
+                    response.write(resource);
+
+                    System.out.println("Serving favicon image...");
+                    break;
+
+                case "/css/search-facade.css":
                     resource = this.getCSS();
                     header = "HTTP/1.1 200 OK\r\nContent-Type: text/css\r\n\r\n";
 
@@ -55,7 +66,7 @@ public class RESTController {
 
                 case "/users", "/users/":
                     resource = this.getUsers();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     response.write(header.getBytes());
                     response.write(resource);
@@ -65,11 +76,11 @@ public class RESTController {
 
                 case "/users/search", "/users/search/":
                     if (parameters == null) {
-                        header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                        header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
                         response.write(header.getBytes());
                         break;
                     }
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     filters = RequestHandler.parseParameters(parameters);
 //                    for (var filter : filters) {
@@ -90,7 +101,7 @@ public class RESTController {
 
                 case "/events", "/events/":
                     resource = this.getEvents();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     response.write(header.getBytes());
                     response.write(resource);
@@ -100,11 +111,11 @@ public class RESTController {
 
                 case "/events/search", "/events/search/":
                     if (parameters == null) {
-                        header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                        header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
                         response.write(header.getBytes());
                         break;
                     }
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     filters = RequestHandler.parseParameters(parameters);
 //                    for (var filter : filters) {
@@ -129,7 +140,7 @@ public class RESTController {
                     String id = resource_path.split("/")[2];
 
                     resource = this.getUsersById(id);
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     response.write(header.getBytes());
                     response.write(resource);
@@ -139,7 +150,7 @@ public class RESTController {
                     String id = resource_path.split("/")[2];
 
                     resource = this.getEventsById(id);
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
                     response.write(header.getBytes());
                     response.write(resource);
@@ -167,6 +178,10 @@ public class RESTController {
         return FileHandler.getFileAsBytes("index.html");
     }
 
+    public byte[] getFavicon() {
+        return FileHandler.getFileAsBytes("koala-icon.ico");
+    }
+
     public byte[] getCSS() {
         return FileHandler.getFileAsBytes("search-facade.css");
     }
@@ -179,15 +194,19 @@ public class RESTController {
             resource.append(user.toString().strip())
                     .append(",\n");
         }
+        resource.delete(resource.length() - 2, resource.length());
+        var response = HtmlCrafter.insertToHTML(resource.toString());
 
-        return resource.toString().getBytes();
+        return response.getBytes();
     }
 
     public byte[] getUsersById(String id) {
         var resource = this.user_repository.findById(id);
 
         if (resource != null) {
-            return resource.toString().getBytes();
+            var response = HtmlCrafter.insertToHTML(resource.toString());
+
+            return response.getBytes();
         }
 
         return "".getBytes();
@@ -202,9 +221,11 @@ public class RESTController {
                 resource.append(user.toString().strip())
                         .append(",\n");
             }
+            resource.delete(resource.length() - 2, resource.length());
         }
+        var response = HtmlCrafter.insertToHTML(resource.toString());
 
-        return resource.toString().getBytes();
+        return response.getBytes();
     }
 
     public byte[] getEvents() {
@@ -215,15 +236,19 @@ public class RESTController {
             resource.append(event.toString().strip())
                     .append(",\n");
         }
+        resource.delete(resource.length() - 2, resource.length() - 1);
+        var response = HtmlCrafter.insertToHTML(resource.toString());
 
-        return resource.toString().getBytes();
+        return response.getBytes();
     }
 
     public byte[] getEventsById(String id) {
         var resource = this.event_repository.findById(id);
 
         if (resource != null) {
-            return resource.toString().getBytes();
+            var response = HtmlCrafter.insertToHTML(resource.toString());
+
+            return response.getBytes();
         }
 
         return "".getBytes();
@@ -238,9 +263,11 @@ public class RESTController {
                 resource.append(event.toString().strip())
                         .append(",\n");
             }
+            resource.delete(resource.length() - 2, resource.length() - 1);
         }
+        var response = HtmlCrafter.insertToHTML(resource.toString());
 
-        return resource.toString().getBytes();
+        return response.getBytes();
     }
 
 }
