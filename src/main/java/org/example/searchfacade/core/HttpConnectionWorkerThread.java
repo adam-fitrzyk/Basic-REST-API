@@ -13,12 +13,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import java.lang.Thread;
-import java.lang.Override;
 
 public class HttpConnectionWorkerThread extends Thread {
 
-    private Socket socket;
-    private RestController controller;
+    private final Socket socket;
+    private final RestController controller;
 
     public HttpConnectionWorkerThread(Socket socket) {
         this.socket = socket;

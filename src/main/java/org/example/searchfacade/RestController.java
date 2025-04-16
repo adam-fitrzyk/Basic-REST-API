@@ -17,8 +17,8 @@ import org.bson.Document;
 
 public class RestController {
 
-    private UserRepository user_repository;
-    private EventRepository event_repository;
+    private final UserRepository user_repository;
+    private final EventRepository event_repository;
 
     public RestController() {
         this.user_repository = UserRepository.getInstance();

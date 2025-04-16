@@ -12,7 +12,7 @@ public class FilterSchemaManager {
     private FilterSchema filter_schema;
 
     private FilterSchemaManager() {
-        var schema_file_name = ConfigurationManager.getInstance().getConfiguration().getFilterSchemaName();
+        var schema_file_name = ConfigurationManager.getInstance().getConfiguration().filter_schema_name();
         this.loadSchema(schema_file_name);
     }
 
@@ -30,7 +30,7 @@ public class FilterSchemaManager {
 
     public boolean validateFilter(Document filter) {
         try {
-            filter_schema.getSchema().validate(new JSONObject(filter.toJson()));
+            filter_schema.schema().validate(new JSONObject(filter.toJson()));
             return true;
         }
         catch (Exception e) {

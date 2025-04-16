@@ -31,8 +31,7 @@ public class HtmlCrafter {
 
     public static String insertToHTML(String payload) {
         payload = payload.indent(4);
-        var doc = String.format(DOC_TEMPLATE, CSS_CONTAINER_CLASS, payload);
-        return doc;
+        return String.format(DOC_TEMPLATE, CSS_CONTAINER_CLASS, payload);
     }
 
 }

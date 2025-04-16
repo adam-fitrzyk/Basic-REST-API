@@ -5,17 +5,7 @@ import org.everit.json.schema.loader.SchemaLoader;
 
 import org.json.JSONObject;
 
-public class FilterSchema {
-
-    private Schema schema;
-
-    public FilterSchema(Schema schema) {
-        this.schema = schema;
-    }
-
-    public Schema getSchema() {
-        return schema;
-    }
+public record FilterSchema (Schema schema) {
 
     public static FilterSchema fromJson(JSONObject json) {
         var schema = SchemaLoader.load(json);

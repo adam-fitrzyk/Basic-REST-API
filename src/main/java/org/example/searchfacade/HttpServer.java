@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class HttpServer {
 
-    private String config_file_name;
+    private final String config_file_name;
 
     public HttpServer(String config_file_name) {
         this.config_file_name = config_file_name;
@@ -19,14 +19,14 @@ public class HttpServer {
         var conf = ConfigurationManager.getInstance();
         conf.loadConfigurationFile(config_file_name);
 
-        int port = conf.getConfiguration().getPort();
+        int port = conf.getConfiguration().port();
 
         System.out.println("> Using port: " + port);
-        System.out.println("> Using schema: " + conf.getConfiguration().getFilterSchemaName());
+        System.out.println("> Using schema: " + conf.getConfiguration().filter_schema_name());
 
         try {
             var serverSocket = new ServerSocket(port);
-            System.out.println("> Listening on port " + conf.getConfiguration().getPort());
+            System.out.println("> Listening on port " + conf.getConfiguration().port());
 
             while (serverSocket.isBound() && !serverSocket.isClosed()) {
                 // Begin listening on port 9999 and wait for any requests

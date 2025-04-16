@@ -12,7 +12,7 @@ import org.bson.json.JsonParseException;
 
 public class RequestHandler {
 
-    private static FilterSchemaManager schema_manager = FilterSchemaManager.getInstance();
+    private static final FilterSchemaManager schema_manager = FilterSchemaManager.getInstance();
 
     public static String[] parseRequest(ArrayList<String> request) {
         String method;
