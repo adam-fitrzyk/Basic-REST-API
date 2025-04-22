@@ -14,12 +14,10 @@ public class UserRepository extends MongoRepository {
     private static UserRepository instance;
     public static final String COLLECTION_NAME = "users";
 
-    private MongoDBConnection connection;
-    private MongoCollection<Document> collection;
+    private final MongoCollection<Document> collection;
 
     private UserRepository() {
         super(COLLECTION_NAME);
-        this.connection = this.getConnection();
         this.collection = this.getCollection();
     }
 
@@ -39,11 +37,7 @@ public class UserRepository extends MongoRepository {
         var docs = this.collection.find();
 
         if (docs.first() != null) {
-            var cursor = docs.iterator();
-
-            while (cursor.hasNext()) {
-                var doc = cursor.next();
-
+            for (Document doc : docs) {
                 _id = doc.getObjectId("_id");
                 user = doc.getString("user");
                 workstation = doc.getString("workstation");
@@ -85,11 +79,7 @@ public class UserRepository extends MongoRepository {
         var docs = this.collection.find(query);
 
         if (docs.first() != null) {
-            var cursor = docs.iterator();
-
-            while (cursor.hasNext()) {
-                var doc = cursor.next();
-
+            for (Document doc : docs) {
                 _id = doc.getObjectId("_id");
                 user = doc.getString("user");
                 workstation = doc.getString("workstation");
@@ -99,10 +89,6 @@ public class UserRepository extends MongoRepository {
         }     
 
         return result;
-    }
-
-    public void closeConnection() {
-        this.connection.close();
     }
 
 }

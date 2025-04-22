@@ -17,8 +17,8 @@ import com.mongodb.client.MongoCollection;
 
 public class MongoRepository {
     
-    private MongoDBConnection connection;
-    private MongoCollection<Document> collection;
+    private final MongoDBConnection connection;
+    private final MongoCollection<Document> collection;
 
     public MongoRepository(String collection_name) {
         this.connection = MongoDBConnection.getInstance();
@@ -41,8 +41,6 @@ public class MongoRepository {
         var bson_filter_list = new ArrayList<Bson>();
         String attribute;
         String operator;
-        int from;
-        int to;
 
         // Load each filter and combine into a query
         for (var filter : filters) {
@@ -50,9 +48,11 @@ public class MongoRepository {
             operator = filter.getString("operator");
 
             Bson bson_filter = empty();
-            try {
+
+            var value = filter.get("value");
+            if (value != null) {
                 // If value field is used, form filter with that value
-                var value = filter.get("value");
+
                 if (attribute.equals("_id")) {
                     try {
                         value = new ObjectId(value.toString());
@@ -60,23 +60,19 @@ public class MongoRepository {
                         assert true;
                     }
                 }
-                switch (operator) {
-                    case "eq":
-                        bson_filter = eq(attribute, value);
-                        break;
-                    case "lte":
-                        bson_filter = lte(attribute, value);
-                        break;
-                    case "gte":
-                        bson_filter = gte(attribute, value);
-                        break;
-                }
+
+                bson_filter = switch (operator) {
+                    case "eq" -> eq(attribute, value);
+                    case "lte" -> lte(attribute, value);
+                    case "gte" -> gte(attribute, value);
+                    default -> bson_filter;
+                };
             }
-            catch (Exception e) {
+            else {
                 // Otherwise, form filter with range
                 var rangeDoc = (Document) filter.get("range");
-                from = rangeDoc.getInteger("from");
-                to = rangeDoc.getInteger("to");
+                var from = rangeDoc.get("from");
+                var to = rangeDoc.get("to");
 
                 bson_filter = and(gte(attribute, from), lte(attribute, to));
             }
@@ -85,6 +81,10 @@ public class MongoRepository {
         }
 
         return and(bson_filter_list);
+    }
+
+    public void closeConnection() {
+        this.connection.close();
     }
 
 }

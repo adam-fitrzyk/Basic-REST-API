@@ -1,15 +1,17 @@
 package org.example.searchfacade;
 
+import org.example.searchfacade.http.HttpResponse;
+import org.example.searchfacade.http.HttpStatus;
 import org.example.searchfacade.model.Event;
 import org.example.searchfacade.model.EventRepository;
 import org.example.searchfacade.model.User;
 import org.example.searchfacade.model.UserRepository;
 
 import org.example.searchfacade.utilities.FileHandler;
+import org.example.searchfacade.utilities.FilterSchemaManager;
 import org.example.searchfacade.utilities.HtmlCrafter;
-import org.example.searchfacade.utilities.RequestHandler;
+import org.example.searchfacade.http.HttpHandler;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -19,159 +21,162 @@ public class RestController {
 
     private final UserRepository user_repository;
     private final EventRepository event_repository;
+    private final FilterSchemaManager schema_manager;
 
     public RestController() {
         this.user_repository = UserRepository.getInstance();
         this.event_repository = EventRepository.getInstance();
+        this.schema_manager = FilterSchemaManager.getInstance();
     }
     
-    public byte[] getResource(String resource_path, String parameters) {
+    public HttpResponse getResponse(String resource_path, String parameters) {
+        // TODO add default and headers that are supposed to be there
+
         // Build response
+        var response = new HttpResponse();
+        response.setProtocol("HTTP/1.1");
+
+        // Set default response as successful
+        response.setStatus(HttpStatus.SUCCESS_200_OK);
+
         ArrayList<Document> filters;
-        String header;
         byte[] resource;
-        var response = new ByteArrayOutputStream();
 
         try {
             switch (resource_path) {
                 case "/", "/index.html":
                     resource = this.getIndex();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "text/html");
+                    response.setBody(resource);
 
                     System.out.println("Serving index html page...");
                     break;
 
                 case "/img/koala-icon.ico":
                     resource = this.getFavicon();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: image/x-icon\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "image/x-icon");
+                    response.setBody(resource);
 
                     System.out.println("Serving favicon image...");
                     break;
 
                 case "/css/search-facade.css":
                     resource = this.getCSS();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/css\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "text/css");
+                    response.setBody(resource);
 
                     System.out.println("Serving css file...");
                     break;
 
                 case "/users", "/users/":
                     resource = this.getUsers();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "text/html");
+                    response.setBody(resource);
 
                     System.out.println("Serving all user entries...");
                     break;
 
                 case "/users/search", "/users/search/":
+                    response.addHeader("Content-Type", "text/html");
+
                     if (parameters == null) {
-                        header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-                        response.write(header.getBytes());
+                        resource = this.getUsers();
+
+                        response.setBody(resource);
+
+                        System.out.println("No filters found, serving all user entries...");
                         break;
                     }
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    filters = RequestHandler.parseParameters(parameters);
-//                    for (var filter : filters) {
-//                        System.out.println(filter.toJson());
-//                    }
+                    filters = HttpHandler.parseParameters(parameters);
 
-                    if (RequestHandler.validateParameters(filters)) {
+                    if (schema_manager.validateFilters(filters)) {
                         resource = this.getUsersBySearch(filters);
                     } else {
                         resource = this.getUsers();
                     }
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.setBody(resource);
 
-                    System.out.println("Serving user entries by filter " + filters.toString() + "...");
+                    System.out.println("Serving user entries by filter " + filters + "...");
                     break;
 
                 case "/events", "/events/":
                     resource = this.getEvents();
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "text/html");
+                    response.setBody(resource);
 
                     System.out.println("Serving all event entries...");
                     break;
 
                 case "/events/search", "/events/search/":
+                    response.addHeader("Content-Type", "text/html");
+
                     if (parameters == null) {
-                        header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-                        response.write(header.getBytes());
+                        resource = this.getEvents();
+
+                        response.setBody(resource);
+
+                        System.out.println("No filters found, serving all event entries...");
                         break;
                     }
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    filters = RequestHandler.parseParameters(parameters);
-//                    for (var filter : filters) {
-//                        System.out.println(filter.toJson());
-//                    }
+                    filters = HttpHandler.parseParameters(parameters);
 
-                    if (RequestHandler.validateParameters(filters)) {
+                    if (schema_manager.validateFilters(filters)) {
                         resource = this.getEventsBySearch(filters);
                     } else {
                         resource = this.getEvents();
                     }
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.setBody(resource);
 
-                    System.out.println("Serving event entries by filter " + filters.toString() + "...");
+                    System.out.println("Serving event entries by filter " + filters + "...");
                     break;
             }
 
-            if (response.size() == 0) {
+            if (response.getBody() == null) {
                 if (resource_path.matches("/users/.+")) {
                     String id = resource_path.split("/")[2];
 
                     resource = this.getUsersById(id);
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "text/html");
+                    response.setBody(resource);
 
                     System.out.println("Serving user entries by id...");
-                } else if (resource_path.matches("/events/.+")) {
+                }
+                else if (resource_path.matches("/events/.+")) {
                     String id = resource_path.split("/")[2];
 
                     resource = this.getEventsById(id);
-                    header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.addHeader("Content-Type", "text/html");
+                    response.setBody(resource);
 
                     System.out.println("Serving event entries by id...");
-                } else {
-                    header = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\n";
-                    resource = "Error 404, Not Found".getBytes();
+                }
+                else {
+                    resource = "Requested Page Not Found".getBytes();
 
-                    response.write(header.getBytes());
-                    response.write(resource);
+                    response.setStatus(HttpStatus.CLIENT_ERROR_404_PAGE_NOT_FOUND);
+                    response.addHeader("Content-Type", "text/plain");
+                    response.setBody(resource);
 
                     System.out.println("Unknown request, serving 404 Error...");
                 }
             }
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
-        return response.toByteArray();
+        return response;
     }
 
     public byte[] getIndex() {
@@ -187,15 +192,9 @@ public class RestController {
     }
 
     public byte[] getUsers() {
-        var resource = new StringBuilder();
         var users = this.user_repository.findAll();
-
-        for (User user : users) {
-            resource.append(user.toString().strip())
-                    .append(",\n");
-        }
-        resource.delete(resource.length() - 2, resource.length());
-        var response = HtmlCrafter.insertToHTML(resource.toString());
+        var resource = User.usersToJson(users);
+        var response = HtmlCrafter.insertToTemplate(resource);
 
         return response.getBytes();
     }
@@ -204,7 +203,7 @@ public class RestController {
         var resource = this.user_repository.findById(id);
 
         if (resource != null) {
-            var response = HtmlCrafter.insertToHTML(resource.toString());
+            var response = HtmlCrafter.insertToTemplate(resource.toString());
 
             return response.getBytes();
         }
@@ -214,30 +213,15 @@ public class RestController {
     
     public byte[] getUsersBySearch(List<Document> filters) {
         var users = this.user_repository.findByFilters(filters);
-        var resource = new StringBuilder();
-
-        if (!users.isEmpty()) {
-            for (var user : users) {
-                resource.append(user.toString().strip())
-                        .append(",\n");
-            }
-            resource.delete(resource.length() - 2, resource.length());
-        }
-        var response = HtmlCrafter.insertToHTML(resource.toString());
+        var resource = User.usersToJson(users);
+        var response = HtmlCrafter.insertToTemplate(resource);
 
         return response.getBytes();
     }
 
     public byte[] getEvents() {
-        var resource = new StringBuilder();
-        var events = this.event_repository.findAll();
-
-        for (Event event : events) {
-            resource.append(event.toString().strip())
-                    .append(",\n");
-        }
-        resource.delete(resource.length() - 2, resource.length() - 1);
-        var response = HtmlCrafter.insertToHTML(resource.toString());
+        var events = this.event_repository.findAll();var resource = Event.eventsToJson(events);
+        var response = HtmlCrafter.insertToTemplate(resource);
 
         return response.getBytes();
     }
@@ -246,7 +230,7 @@ public class RestController {
         var resource = this.event_repository.findById(id);
 
         if (resource != null) {
-            var response = HtmlCrafter.insertToHTML(resource.toString());
+            var response = HtmlCrafter.insertToTemplate(resource.toString());
 
             return response.getBytes();
         }
@@ -255,17 +239,9 @@ public class RestController {
     }
 
     public byte[] getEventsBySearch(List<Document> filters) {
-        var resource = new StringBuilder();
         var events = this.event_repository.findByFilters(filters);
-        
-        if (!events.isEmpty()) {
-            for (var event : events) {
-                resource.append(event.toString().strip())
-                        .append(",\n");
-            }
-            resource.delete(resource.length() - 2, resource.length() - 1);
-        }
-        var response = HtmlCrafter.insertToHTML(resource.toString());
+        var resource = Event.eventsToJson(events);
+        var response = HtmlCrafter.insertToTemplate(resource);
 
         return response.getBytes();
     }

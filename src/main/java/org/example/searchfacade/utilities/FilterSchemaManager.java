@@ -1,5 +1,7 @@
 package org.example.searchfacade.utilities;
 
+import java.util.List;
+
 import org.example.searchfacade.config.ConfigurationManager;
 
 import org.bson.Document;
@@ -28,9 +30,11 @@ public class FilterSchemaManager {
         this.filter_schema = FilterSchema.fromJson(raw_schema);
     }
 
-    public boolean validateFilter(Document filter) {
+    public boolean validateFilters(List<Document> filters) {
         try {
-            filter_schema.schema().validate(new JSONObject(filter.toJson()));
+            for (Document filter : filters) {
+                filter_schema.schema().validate(new JSONObject(filter.toJson()));
+            }
             return true;
         }
         catch (Exception e) {

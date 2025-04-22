@@ -17,9 +17,7 @@ public class HtmlCrafter {
             <main>
                 <div class="%s">
 <pre>
-{
 %s
-}
 </pre>
                 </div>
             </main>
@@ -29,9 +27,8 @@ public class HtmlCrafter {
 
     private static final String CSS_CONTAINER_CLASS = "api-container";
 
-    public static String insertToHTML(String payload) {
-        payload = payload.indent(4);
-        return String.format(DOC_TEMPLATE, CSS_CONTAINER_CLASS, payload);
+    public static String insertToTemplate(String resource) {
+        return String.format(DOC_TEMPLATE, CSS_CONTAINER_CLASS, resource);
     }
 
 }

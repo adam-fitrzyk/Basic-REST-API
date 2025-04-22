@@ -1,5 +1,7 @@
 package org.example.searchfacade.model;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 public record User (
@@ -7,6 +9,24 @@ public record User (
         String user,
         String workstation
 ) {
+
+    public static String usersToJson(List<User> users) {
+        if (users.isEmpty()) {
+            return "";
+        }
+
+        var json = new StringBuilder("{\n");
+
+        for (User user : users) {
+            json.append(user.toString().indent(4).stripTrailing())
+                    .append(",\n");
+        }
+        json.deleteCharAt(json.length() - 2);
+
+        json.append("}");
+
+        return json.toString();
+    }
 
     @Override
     public String toString() {

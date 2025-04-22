@@ -9,6 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 import org.bson.Document;
+import org.example.searchfacade.config.ConfigurationManager;
 
 /* tl_rest_api_task DATABASE PASSWORD:
  * --- LMBSBHwaaAV9bC3U ---
@@ -17,24 +18,14 @@ import org.bson.Document;
 public class MongoDBConnection {
 
     private static MongoDBConnection instance;
-    private static final String CONNECTION_STRING = "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster";
-    private static final String DATABASE_NAME = "tl_rest_api_task";
+    private static final String CONNECTION_STRING = ConfigurationManager.getInstance().getConfiguration().mongodb_connection_string();
+    private static final String DATABASE_NAME = ConfigurationManager.getInstance().getConfiguration().mongodb_name();
     
     private MongoClient client;
     private MongoDatabase database;
 
     private MongoDBConnection() {
-        var serverApi = ServerApi.builder()
-            .version(ServerApiVersion.V1)
-            .build();
-
-        var settings = MongoClientSettings.builder()
-            .applyConnectionString(new ConnectionString(CONNECTION_STRING))
-            .serverApi(serverApi)
-            .build();
-
-        this.client = MongoClients.create(settings);
-        this.database = client.getDatabase(DATABASE_NAME);
+        this.open();
         System.out.println("> MongoDatabase model formed successfully");
     }
 
@@ -45,13 +36,27 @@ public class MongoDBConnection {
         return instance;
     }
 
+    public MongoDatabase getDatabase() {
+        return this.database;
+    }
+
     public void testPing() {
         var collection = database.getCollection("pings");
         collection.insertOne(new Document("ping", 1));
     }
 
-    public MongoDatabase getDatabase() {
-        return this.database;
+    public void open() {
+        var serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+
+        var settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(CONNECTION_STRING))
+                .serverApi(serverApi)
+                .build();
+
+        this.client = MongoClients.create(settings);
+        this.database = client.getDatabase(DATABASE_NAME);
     }
 
     public void close() {

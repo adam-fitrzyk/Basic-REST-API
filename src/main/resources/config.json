@@ -1,5 +1,7 @@
 {
   "port": 6868,
   "webroot": "/public",
-  "filter_schema_name": "filter-schema.json"
+  "filter_schema_name": "filter-schema.json",
+  "mongodb_connection_string": "mongodb+srv://fitrzyka:LMBSBHwaaAV9bC3U@mymongocluster.w8ticzb.mongodb.net/?retryWrites=true&w=majority&appName=MyMongoCluster",
+  "mongodb_name": "tl_rest_api_task"
 }

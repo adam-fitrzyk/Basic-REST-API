@@ -3,7 +3,6 @@ package org.example.searchfacade.utilities;
 import org.example.searchfacade.config.ConfigurationManager;
 import org.example.searchfacade.config.Configuration;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -19,7 +18,7 @@ public class FileHandler {
             var out = new ByteArrayOutputStream();
 
             final byte[] buffer = new byte[0x10000];
-            int n = 0;
+            int n;
             while ((n = in.read(buffer)) >= 0) {
                 out.write(buffer, 0, n);
             }

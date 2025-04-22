@@ -13,13 +13,11 @@ public class EventRepository extends MongoRepository {
 
     private static EventRepository instance;
     public static final String COLLECTION_NAME = "events";
-    
-    private MongoDBConnection connection;
-    private MongoCollection<Document> collection;
+
+    private final MongoCollection<Document> collection;
 
     private EventRepository() {
         super(COLLECTION_NAME);
-        this.connection = this.getConnection();
         this.collection = this.getCollection();
     }
 
@@ -41,11 +39,7 @@ public class EventRepository extends MongoRepository {
         var docs = this.collection.find();
 
         if (docs.first() != null) {
-            var cursor = docs.iterator();
-
-            while (cursor.hasNext()) {
-                var doc = cursor.next();
-
+            for (Document doc : docs) {
                 _id = doc.getObjectId("_id");
                 type = doc.getString("type");
                 time = doc.getDouble("time");
@@ -95,11 +89,7 @@ public class EventRepository extends MongoRepository {
         var docs = this.collection.find(query);
 
         if (docs.first() != null) {
-            var cursor = docs.iterator();
-
-            while (cursor.hasNext()) {
-                var doc = cursor.next();
-
+            for (Document doc : docs) {
                 _id = doc.getObjectId("_id");
                 type = doc.getString("type");
                 time = doc.getDouble("time");
@@ -111,10 +101,6 @@ public class EventRepository extends MongoRepository {
         }
 
         return result;
-    }
-
-    public void closeConnection() {
-        this.connection.close();
     }
 
 }

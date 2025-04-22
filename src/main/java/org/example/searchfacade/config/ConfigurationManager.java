@@ -18,7 +18,9 @@ public class ConfigurationManager {
 
     public void loadConfigurationFile(String file_name) {
         var conf = JsonHandler.parseJSONFile(file_name);
-        configuration = Configuration.fromJson(conf);
+        if (conf != null) {
+            configuration = Configuration.fromJson(conf);
+        }
     }
 
     public Configuration getConfiguration() {

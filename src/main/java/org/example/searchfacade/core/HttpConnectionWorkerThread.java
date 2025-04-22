@@ -1,16 +1,13 @@
 package org.example.searchfacade.core;
 
 import org.example.searchfacade.RestController;
-import org.example.searchfacade.utilities.RequestHandler;
+import org.example.searchfacade.http.HttpResponse;
+import org.example.searchfacade.http.HttpHandler;
+import org.example.searchfacade.http.HttpStatus;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
 import java.net.Socket;
-
-import java.util.ArrayList;
 
 import java.lang.Thread;
 
@@ -29,48 +26,52 @@ public class HttpConnectionWorkerThread extends Thread {
         try {
             // Get input stream to read request
             var input = socket.getInputStream();
-            var reader = new BufferedReader(new InputStreamReader(input));
 
             // Get output stream to send back a response
             var output = socket.getOutputStream();
-            var writer = new PrintWriter(output, true);
 
-            // Read request line by line and save in variable request
-            var request = new ArrayList<String>();
-            String request_line = reader.readLine();
+            try {
+                var request = HttpHandler.parseRequest(input);
+                var response = new HttpResponse();
 
-            if (request_line == null) {
-                reader.close();
-                writer.close();
-                socket.close();
-            } else {
-                while (!request_line.isEmpty()) {
-                    request.add(request_line);
-                    request_line = reader.readLine();
+                if (request == null) {
+                    response.setProtocol("HTTP/1.1");
+                    response.setStatus(HttpStatus.CLIENT_ERROR_400_BAD_REQUEST);
+
+                    output.write(response.getBytes());
+                    return;
                 }
 
-                var components = RequestHandler.parseRequest(request);
-                var status = RequestHandler.validateRequest(components);
+                var status = HttpHandler.validateRequest(request);
 
-                if (status != 200) {
-                    writer.println("HTTP/1.1 " + status + " Error\r\n\r\n");
-                    writer.println("Error: " + status);
+                if (status.STATUS_CODE != 200) {
+                    response.setProtocol("HTTP/1.1");
+                    response.setStatus(status);
+                    response.setBody((status.STATUS_CODE + " Error: " + status.REASON_PHRASE).getBytes());
                 } else {
-                    var resource_path = components[1];
-                    var parameters = components[2];
-                    var response = this.controller.getResource(resource_path, parameters);
-                    output.write(response);
-                    output.flush();
+                    response = this.controller.getResponse(request.getTarget(), request.getParameters());
                 }
 
-                // Send out response and close connection
-                reader.close();
-                writer.close();
-                socket.close();
+                output.write(response.getBytes());
+                output.flush();
             }
+            catch (Exception e) {
+                var response = new HttpResponse();
+                response.setProtocol("HTTP/1.1");
+                response.setStatus(HttpStatus.SERVER_ERROR_500_INTERNAL_SERVER_ERROR);
+
+                output.write(response.getBytes());
+                output.flush();
+
+                e.printStackTrace();
+            }
+
+            input.close();
+            output.close();
+            socket.close();
         }
         catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 

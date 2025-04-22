@@ -9,7 +9,10 @@ import java.io.InputStreamReader;
 public class JsonHandler {
 
     public static JSONObject parseJSONFile(String file_name) {
-        try (var input_stream = JsonHandler.class.getResourceAsStream("/" + file_name);) {
+        try (var input_stream = JsonHandler.class.getResourceAsStream("/" + file_name)) {
+            if (input_stream == null) {
+                throw new NullPointerException("Input stream is null, json file not found");
+            }
             var reader = new BufferedReader(new InputStreamReader(input_stream));
 
             var content = new StringBuilder();
@@ -22,7 +25,11 @@ public class JsonHandler {
             return new JSONObject(content.toString());
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
             return null;
         }
     }
