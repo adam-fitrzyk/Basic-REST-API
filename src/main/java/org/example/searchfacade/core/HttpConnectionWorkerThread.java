@@ -11,14 +11,20 @@ import java.net.Socket;
 
 import java.lang.Thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HttpConnectionWorkerThread extends Thread {
 
     private final Socket socket;
     private final RestController controller;
 
+    private final Logger logger;
+
     public HttpConnectionWorkerThread(Socket socket) {
         this.socket = socket;
         this.controller = new RestController();
+        this.logger = LoggerFactory.getLogger(HttpConnectionWorkerThread.class);
     }
 
     @Override
@@ -63,7 +69,7 @@ public class HttpConnectionWorkerThread extends Thread {
                 output.write(response.getBytes());
                 output.flush();
 
-                e.printStackTrace();
+                logger.error("Encountered error whilst handling HttpRequest and sending HttpResponse", e);
             }
 
             input.close();
@@ -71,7 +77,7 @@ public class HttpConnectionWorkerThread extends Thread {
             socket.close();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Encountered error whilst fetching input and output streams of connection", e);
         }
     }
 

@@ -14,7 +14,12 @@ import static java.net.URLDecoder.decode;
 import org.bson.Document;
 import org.bson.json.JsonParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HttpHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
 
     public static HttpRequest parseRequest(InputStream in) {
         try {
@@ -45,11 +50,11 @@ public class HttpHandler {
             return request;
         }
         catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
+            logger.error("HttpRequest request line missing data", e);
             return null;
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Input stream given not valid" , e);
             return null;
         }
 

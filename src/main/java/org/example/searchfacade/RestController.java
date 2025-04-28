@@ -17,20 +17,26 @@ import java.util.ArrayList;
 
 import org.bson.Document;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RestController {
 
     private final UserRepository user_repository;
     private final EventRepository event_repository;
     private final FilterSchemaManager schema_manager;
 
+    private final Logger logger;
+
     public RestController() {
         this.user_repository = UserRepository.getInstance();
         this.event_repository = EventRepository.getInstance();
         this.schema_manager = FilterSchemaManager.getInstance();
+        this.logger = LoggerFactory.getLogger(RestController.class);
     }
     
     public HttpResponse getResponse(String resource_path, String parameters) {
-        // TODO add default and headers that are supposed to be there
+        // TODO add default headers that are supposed to be there
 
         // Build response
         var response = new HttpResponse();
@@ -50,7 +56,7 @@ public class RestController {
                     response.addHeader("Content-Type", "text/html");
                     response.setBody(resource);
 
-                    System.out.println("Serving index html page...");
+                    logger.info("Serving index html page...");
                     break;
 
                 case "/img/koala-icon.ico":
@@ -59,7 +65,7 @@ public class RestController {
                     response.addHeader("Content-Type", "image/x-icon");
                     response.setBody(resource);
 
-                    System.out.println("Serving favicon image...");
+                    logger.info("Serving favicon image...");
                     break;
 
                 case "/css/search-facade.css":
@@ -68,7 +74,7 @@ public class RestController {
                     response.addHeader("Content-Type", "text/css");
                     response.setBody(resource);
 
-                    System.out.println("Serving css file...");
+                    logger.info("Serving css file...");
                     break;
 
                 case "/users", "/users/":
@@ -77,7 +83,7 @@ public class RestController {
                     response.addHeader("Content-Type", "text/html");
                     response.setBody(resource);
 
-                    System.out.println("Serving all user entries...");
+                    logger.info("Serving all user entries...");
                     break;
 
                 case "/users/search", "/users/search/":
@@ -88,7 +94,7 @@ public class RestController {
 
                         response.setBody(resource);
 
-                        System.out.println("No filters found, serving all user entries...");
+                        logger.info("No filters found, serving all user entries...");
                         break;
                     }
 
@@ -102,7 +108,7 @@ public class RestController {
 
                     response.setBody(resource);
 
-                    System.out.println("Serving user entries by filter " + filters + "...");
+                    logger.info("Serving user entries by filter {}...", filters);
                     break;
 
                 case "/events", "/events/":
@@ -111,7 +117,7 @@ public class RestController {
                     response.addHeader("Content-Type", "text/html");
                     response.setBody(resource);
 
-                    System.out.println("Serving all event entries...");
+                    logger.info("Serving all event entries...");
                     break;
 
                 case "/events/search", "/events/search/":
@@ -122,7 +128,7 @@ public class RestController {
 
                         response.setBody(resource);
 
-                        System.out.println("No filters found, serving all event entries...");
+                        logger.info("No filters found, serving all event entries...");
                         break;
                     }
 
@@ -136,7 +142,7 @@ public class RestController {
 
                     response.setBody(resource);
 
-                    System.out.println("Serving event entries by filter " + filters + "...");
+                    logger.info("Serving event entries by filter {}...", filters);
                     break;
             }
 
@@ -149,7 +155,7 @@ public class RestController {
                     response.addHeader("Content-Type", "text/html");
                     response.setBody(resource);
 
-                    System.out.println("Serving user entries by id...");
+                    logger.info("Serving user entries by id {}...", id);
                 }
                 else if (resource_path.matches("/events/.+")) {
                     String id = resource_path.split("/")[2];
@@ -159,7 +165,7 @@ public class RestController {
                     response.addHeader("Content-Type", "text/html");
                     response.setBody(resource);
 
-                    System.out.println("Serving event entries by id...");
+                    logger.info("Serving event entries by id {}...", id);
                 }
                 else {
                     resource = "Requested Page Not Found".getBytes();
@@ -173,7 +179,7 @@ public class RestController {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Encountered error while building HttpResponse", e);
         }
 
         return response;

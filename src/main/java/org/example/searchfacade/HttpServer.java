@@ -7,12 +7,18 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HttpServer {
 
     private final String config_file_name;
 
+    private final Logger logger;
+
     public HttpServer(String config_file_name) {
         this.config_file_name = config_file_name;
+        this.logger = LoggerFactory.getLogger(HttpServer.class);
     }
 
     public void run() {
@@ -21,26 +27,26 @@ public class HttpServer {
 
         int port = conf.getConfiguration().port();
 
-        System.out.println("> Using port: " + port);
-        System.out.println("> Using schema: " + conf.getConfiguration().filter_schema_name());
+        logger.info("> Using port: {}", port);
+        logger.info("> Using schema: {}", conf.getConfiguration().filter_schema_name());
 
         try {
             var serverSocket = new ServerSocket(port);
-            System.out.println("> Listening on port " + conf.getConfiguration().port());
+            logger.info("> Listening on port {}", conf.getConfiguration().port());
 
             while (serverSocket.isBound() && !serverSocket.isClosed()) {
-                // Begin listening on port 9999 and wait for any requests
+                // Begin listening and wait for any requests
                 Socket socket = serverSocket.accept();
 
                 // Program will run once request has been detected
-                System.out.println("> New client connected");
+                logger.info("> New client connected");
 
                 var workerThread = new HttpConnectionWorkerThread(socket);
                 workerThread.start();
             }
-            // serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } 
+        catch (IOException e) {
+            logger.warn("Encountered error whilst running Sockets", e);
         }
     }
 

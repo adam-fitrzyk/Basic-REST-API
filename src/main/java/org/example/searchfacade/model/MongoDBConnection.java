@@ -11,6 +11,9 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.example.searchfacade.config.ConfigurationManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /* tl_rest_api_task DATABASE PASSWORD:
  * --- LMBSBHwaaAV9bC3U ---
  */
@@ -24,9 +27,12 @@ public class MongoDBConnection {
     private MongoClient client;
     private MongoDatabase database;
 
+    private final Logger logger;
+
     private MongoDBConnection() {
+        this.logger = LoggerFactory.getLogger(MongoDBConnection.class);
         this.open();
-        System.out.println("> MongoDatabase model formed successfully");
+        logger.info("> MongoDatabase model formed successfully");
     }
 
     public static MongoDBConnection getInstance() {

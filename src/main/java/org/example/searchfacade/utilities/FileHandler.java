@@ -4,11 +4,17 @@ import org.example.searchfacade.config.ConfigurationManager;
 import org.example.searchfacade.config.Configuration;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileHandler {
 
     private static final Configuration conf = ConfigurationManager.getInstance().getConfiguration();
+
+    private static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
 
     public static byte[] getFileAsBytes(String relative_path) {
         try (var in = FileHandler.class.getResourceAsStream(conf.webroot() + "/" + relative_path)) {
@@ -26,7 +32,7 @@ public class FileHandler {
             return out.toByteArray();
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            logger.error("Encountered error whilst fetching file data as bytes", e);
             return null;
         }
     }

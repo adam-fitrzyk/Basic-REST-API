@@ -6,7 +6,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JsonHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(JsonHandler.class);
 
     public static JSONObject parseJSONFile(String file_name) {
         try (var input_stream = JsonHandler.class.getResourceAsStream("/" + file_name)) {
@@ -25,11 +30,11 @@ public class JsonHandler {
             return new JSONObject(content.toString());
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Encountered error whilst parsing json file", e);
             return null;
         }
         catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.error("Json file provided not found", e);
             return null;
         }
     }

@@ -4,15 +4,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HttpResponse extends HttpMessage {
 
     private HttpStatus status;
 
-    public HttpResponse() { }
+    private final Logger logger;
+
+    public HttpResponse() { this.logger = LoggerFactory.getLogger(HttpResponse.class); }
 
     public HttpResponse(String protocol, HttpStatus status, Hashtable<String, String> headers, byte[] body) {
         super(protocol, headers, body);
         this.status = status;
+        this.logger = LoggerFactory.getLogger(HttpResponse.class);
     }
 
     public int getStatusCode() {
@@ -75,7 +81,7 @@ public class HttpResponse extends HttpMessage {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to convert HttpResponse into binary", e);
         }
 
         return response.toByteArray();

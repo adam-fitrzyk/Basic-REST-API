@@ -4,19 +4,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HttpRequest extends HttpMessage {
 
     private String method;
     private String target;
     private String parameters;
 
-    public HttpRequest() { }
+    private final Logger logger;
+
+    public HttpRequest() { this.logger = LoggerFactory.getLogger(HttpRequest.class); }
 
     public HttpRequest(String method, String target, String parameters, String protocol, Hashtable<String, String> headers, byte[] body) {
         super(protocol, headers, body);
         this.method = method;
         this.target = target;
         this.parameters = parameters;
+        this.logger = LoggerFactory.getLogger(HttpRequest.class);
     }
 
     public String getMethod() {
@@ -87,7 +93,7 @@ public class HttpRequest extends HttpMessage {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to convert HttpRequest into binary", e);
         }
 
         return request.toByteArray();
